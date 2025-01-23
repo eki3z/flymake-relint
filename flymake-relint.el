@@ -1,12 +1,13 @@
 ;;; flymake-relint.el --- A relint Flymake backend -*- lexical-binding: t -*-
 
-;; Copyright (C) 2023 liuyinz
+;; Copyright (C) 2023-2025 Eki Zhang
 
-;; Author: liuyinz <liuyinz95@gmail.com>
+;; Author: Eki Zhang <liuyinz95@gmail.com>
+;; Maintainer: Eki Zhang <liuyinz95@gmail.com>
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "26.1") (relint "1.23"))
 ;; Keywords: lisp
-;; Homepage: https://github.com/liuyinz/flymake-relint
+;; Homepage: https://github.com/eki3z/flymake-relint
 
 ;; This file is not a part of GNU Emacsl.
 
