@@ -26,6 +26,7 @@ It requires Emacs 26 at least.
 
 ### dependencies
 
+- emacs, version >= 28.1
 - [relint][relint]
 
 ### package
