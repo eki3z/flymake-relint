@@ -44,7 +44,6 @@
 (require 'flymake)
 (require 'relint)
 
-(declare-function flymake-diag-region "flymake")
 (declare-function flymake-make-diagnostic "flymake")
 
 (defun flymake-relint (report-fn &rest _args)
@@ -52,30 +51,17 @@
 Use `relint-flymake-setup' to add this to
 `flymake-diagnostic-functions'.  Calls REPORT-FN directly."
   (let ((collection (relint-buffer (current-buffer))))
-    (cl-loop for (message expr-pos error-pos str str-idx severity) in
-             collection
+    (cl-loop for diag in collection
              collect
-             (let* ((pos (or error-pos expr-pos))
-                    (msg (if error-pos
-                             message
-                           (mapconcat 'identity
-                                      (cons message
-                                            (when str
-                                              (cons (relint--quote-string str)
-                                                    (when str-idx
-                                                      (list (concat " " (relint--caret-string str str-idx)))))))
-                                      "\n")))
-                    (region (save-excursion
-                              (goto-char pos)
-                              (move-beginning-of-line 1)
-                              (flymake-diag-region (current-buffer)
-                                                   (line-number-at-pos)
-                                                   (- pos (point))))))
-               (flymake-make-diagnostic (current-buffer)
-                                        (car region)
-                                        (cdr region)
-                                        (if (eq severity 'warning) :warning :error)
-                                        msg))
+             (flymake-make-diagnostic
+              (current-buffer)
+              (relint-diag-beg-pos diag)
+              (relint-diag-end-pos diag)
+              (cl-case (relint-diag-severity diag)
+                (error :error)
+                (warning :warning)
+                (info :note))
+              (relint-diag-message diag))
              into diags
              finally (funcall report-fn diags))))
 
@@ -87,7 +73,6 @@ Use `relint-flymake-setup' to add this to
       (error "Package-lint-flymake requires Emacs 26 or later")
     (add-hook 'flymake-diagnostic-functions #'flymake-relint nil t)
     (flymake-mode)))
-
 
 (provide 'flymake-relint)
 ;;; flymake-relint.el ends here
